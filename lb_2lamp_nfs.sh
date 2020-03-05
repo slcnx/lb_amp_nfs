@@ -38,10 +38,10 @@ ssh-copy-id -i ~/.ssh/id_rsa.pub nfs-server
 ssh-copy-id -i ~/.ssh/id_rsa.pub lb
 
 # 所有主机暂停iptables, selinux
-ssh lb systemctl stop firewalld.service;systemctl disable firewalld.service;setenforce 0;sed -i 's@SELINUX=.*@SELINUX=disabled@g' /etc/selinux/config
-ssh nfs-server systemctl stop firewalld.service;systemctl disable firewalld.service;setenforce 0;sed -i 's@SELINUX=.*@SELINUX=disabled@g' /etc/selinux/config
-ssh lamp1 systemctl stop firewalld.service;systemctl disable firewalld.service;setenforce 0;sed -i 's@SELINUX=.*@SELINUX=disabled@g' /etc/selinux/config
-ssh lamp2 systemctl stop firewalld.service;systemctl disable firewalld.service;setenforce 0;sed -i 's@SELINUX=.*@SELINUX=disabled@g' /etc/selinux/config
+ssh lb "systemctl stop firewalld.service;systemctl disable firewalld.service;setenforce 0;sed -i 's@SELINUX=.*@SELINUX=disabled@g' /etc/selinux/config"
+ssh nfs-server "systemctl stop firewalld.service;systemctl disable firewalld.service;setenforce 0;sed -i 's@SELINUX=.*@SELINUX=disabled@g' /etc/selinux/config"
+ssh lamp1 "systemctl stop firewalld.service;systemctl disable firewalld.service;setenforce 0;sed -i 's@SELINUX=.*@SELINUX=disabled@g' /etc/selinux/config"
+ssh lamp2 "systemctl stop firewalld.service;systemctl disable firewalld.service;setenforce 0;sed -i 's@SELINUX=.*@SELINUX=disabled@g' /etc/selinux/config"
 
 # 统一主机解析名文件
 scp /etc/hosts lamp1:/etc/hosts
