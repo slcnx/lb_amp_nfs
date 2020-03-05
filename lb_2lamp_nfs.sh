@@ -37,3 +37,10 @@ ssh-copy-id -i ~/.ssh/id_rsa.pub lamp2
 ssh-copy-id -i ~/.ssh/id_rsa.pub nfs-server
 ssh-copy-id -i ~/.ssh/id_rsa.pub lb
 
+# 所有主机暂停iptables, selinux
+ssh lb systemctl stop firewalld.service;systemctl disable firewalld.service;setenforce 0;sed -i 's@SELINUX=.*@SELINUX=disabled@g' /etc/selinux/config
+ssh nfs-server systemctl stop firewalld.service;systemctl disable firewalld.service;setenforce 0;sed -i 's@SELINUX=.*@SELINUX=disabled@g' /etc/selinux/config
+ssh lamp1 systemctl stop firewalld.service;systemctl disable firewalld.service;setenforce 0;sed -i 's@SELINUX=.*@SELINUX=disabled@g' /etc/selinux/config
+ssh lamp2 systemctl stop firewalld.service;systemctl disable firewalld.service;setenforce 0;sed -i 's@SELINUX=.*@SELINUX=disabled@g' /etc/selinux/config
+
+
