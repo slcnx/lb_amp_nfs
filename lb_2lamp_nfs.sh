@@ -43,4 +43,9 @@ ssh nfs-server systemctl stop firewalld.service;systemctl disable firewalld.serv
 ssh lamp1 systemctl stop firewalld.service;systemctl disable firewalld.service;setenforce 0;sed -i 's@SELINUX=.*@SELINUX=disabled@g' /etc/selinux/config
 ssh lamp2 systemctl stop firewalld.service;systemctl disable firewalld.service;setenforce 0;sed -i 's@SELINUX=.*@SELINUX=disabled@g' /etc/selinux/config
 
+# 统一主机解析名文件
+scp /etc/hosts lamp1:/etc/hosts
+scp /etc/hosts lamp2:/etc/hosts
+scp /etc/hosts nfs-server:/etc/hosts
+scp /etc/hosts lb:/etc/hosts
 
