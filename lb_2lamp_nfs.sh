@@ -17,7 +17,7 @@ cat > /etc/hosts << EOF
 ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
 $lamp1 lamp1
 $lamp2 lamp2
-$nfs nfs-server
+$nfs nfs-server smb-server
 $lb  lb
 EOF
 
