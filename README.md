@@ -33,6 +33,8 @@ ansible.magedu.com
 注意：仅需要修改mdns, sdns为合适的ip
 
 
+对DNS的2个主机进行公钥认证
+执行脚本 ssh-copy-id.sh
 
 vi roles/dnsmaster/dns.yml
  
@@ -97,5 +99,24 @@ vi roles/dnsmaster/dns.yml
 # ansible-playbook -C /etc/ansible/roles/dnsmaster/dns.yml
 # ansible-playbook  /etc/ansible/roles/dnsmaster/dns.yml
 ```
+
+
+# 所有主机添加解析文件
+ansible all -m copy "src=resolv.conf dest=/etc/resolv.conf"
+
+# 安装samba
+# ansible-playbook  /etc/ansible/roles/samba-server/smb.yml
+
+# 安装httpd
+# ansible-playbook  /etc/ansible/roles/httpd/httpd.yml
+
+# 安装php-fpm, 允许的主机必须为主机名
+# ansible-playbook  /etc/ansible/roles/php-fpm/php-fpm.yml
+
+# 安装mariadb-server
+# ansible-playbook /etc/ansible/roles/mariadb-server/mariadb-server.yml
+
+
+# httpd, php-fpm 挂载samba, /etc/fstab自启动, 生成网页文件
 
 
