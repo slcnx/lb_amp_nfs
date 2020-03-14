@@ -116,7 +116,6 @@ ansible all -m copy "src=resolv.conf dest=/etc/resolv.conf"
 # 安装mariadb-server
 # ansible-playbook /etc/ansible/roles/mariadb-server/mariadb-server.yml
 
-
 # httpd, php-fpm 挂载samba, /etc/fstab自启动, 生成网页文件
 
 
