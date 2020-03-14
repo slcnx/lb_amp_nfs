@@ -34,7 +34,7 @@ ansible.magedu.com
 
 
 
-vi dns.yml
+vi roles/dnsmaster/dns.yml
  
  { role: dnsmaster, allow_recursion: '172.16.0.16/16;', zone: magedu.com, slaves: 172.16.0.178; , domain: magedu.com., serial: 2020031411, refresh: 1H, retry: 5M, expire: 3D, ttl: 1D, ns1: 172.16.0.172, ns2: 172.16.0.171, mx1: 1.1.1.1, mx2: 2.2.2.2, www1: 172.16.0.171, www2: 172.16.0.178, php: 172.16.0.172, mysql: 172.16.0.173, files: 172.16.0.177, ansible: 172.16.0.177, rsyslog: 172.16.0.177 }
 	allow_recursion: /etc/named.conf中allow-recursion中的地址, ip或net/prefix 表示允许哪些地址来递归
@@ -93,9 +93,9 @@ vi dns.yml
 
 # 运行
 ```
-# ansible-playbook --syntax-check dns.yml 
-# ansible-playbook -C dns.yml 
-# ansible-playbook  dns.yml
+# ansible-playbook --syntax-check /etc/ansible/roles/dnsmaster/dns.yml 
+# ansible-playbook -C /etc/ansible/roles/dnsmaster/dns.yml
+# ansible-playbook  /etc/ansible/roles/dnsmaster/dns.yml
 ```
 
 
