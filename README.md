@@ -1,5 +1,5 @@
 # 展开
-tar Pvxf  dns-master-slave.tar.gz
+tar Pvxf  2httpd-nfs-mariadb_2dns-rsyslog-ansible.tar.gz
 
 # 修改配置
 cd /etc/ansible/
@@ -30,15 +30,94 @@ ansible.magedu.com
 172.16.0.178
 
 
+[any:children]
+web
+php
+mariadb
+files
+rsyslog
+ansible
+mdns
+sdns
+
+[any:vars]
+#master dns
+allow_recursion='192.168.73.0/24;'
+zone=magedu.com
+slaves=192.168.73.133;
+domain=magedu.com.
+serial=2020031412
+refresh=1H
+retry=5M
+expire=3D
+ttl=1D
+ns1=192.168.73.133
+ns2=192.168.73.132
+mx1=1.1.1.1
+mx2=2.2.2.2
+www1=192.168.73.135
+www2=192.168.73.128
+php=192.168.73.128
+mysql=192.168.73.135
+files=192.168.73.132
+ansible=192.168.73.133
+rsyslog=192.168.73.133
+
+#slave dns
+masters=192.168.73.132;
+
+# web
+name="web {{ ansible_default_ipv4.address }}"
+phpfpm_server={{ php }}
+phpfpm_port=9000
+
+#mariadb
+log_bin=master-log
+dbname=wordpress
+encoding=utf8mb4
+mysql_host=127.0.0.1
+mysql_port=3306
+mysql_root_pwd=''
+loginuser=wpuser
+loginpasswd=wppass
+priv='wordpress.*:ALL'
+loginhost='%'
+
+
+#php
+php_documentroot=/var/www/html
+php_session_save_path=/data/php_session
+allowed_clients='127.0.0.1,{{ www1 }},{{ www2 }}'
+
+#samba
+sharepath=/data/smb/web
+commonuser=apache
+commonuserid=48
+commonusergid=48
+password=apache
+
+#mount
+mountopts="username=apache,password=apache"
+mountpath=/var/www/html
+mountsrc=//{{ files }}/mysmb
+
+
 注意：仅需要修改mdns, sdns为合适的ip
 
 
 对DNS的2个主机进行公钥认证
+ ansible-playbook dns.yml
+
+
+
+更新当前主机的/etc/resolv.conf
 执行脚本 ssh-copy-id.sh
 
-vi roles/dnsmaster/dns.yml
+
+
+
+
  
- { role: dnsmaster, allow_recursion: '172.16.0.16/16;', zone: magedu.com, slaves: 172.16.0.178; , domain: magedu.com., serial: 2020031411, refresh: 1H, retry: 5M, expire: 3D, ttl: 1D, ns1: 172.16.0.172, ns2: 172.16.0.171, mx1: 1.1.1.1, mx2: 2.2.2.2, www1: 172.16.0.171, www2: 172.16.0.178, php: 172.16.0.172, mysql: 172.16.0.173, files: 172.16.0.177, ansible: 172.16.0.177, rsyslog: 172.16.0.177 }
 	allow_recursion: /etc/named.conf中allow-recursion中的地址, ip或net/prefix 表示允许哪些地址来递归
 	zone：/etc/named.rfc1912.zone中定义zone 例如: magedu.com
 	slaves: allow-transfer 的值, 主应该仅允许从ip来传送
@@ -78,9 +157,6 @@ vi roles/dnsmaster/dns.yml
 		ansible	IN	A	{{ ansible }}
 		rsyslog IN	A	{{ rsyslog }}
 
- { role: dnsslave, allow_recursion: '172.16.0.16/16;', zone: magedu.com, masters: 172.16.0.177; }
-	allow_recursion: /etc/named.conf中allow-recursion中的地址, ip或net/prefix 表示允许哪些地址来递归
-	zone：/etc/named.rfc1912.zone中定义zone 例如: magedu.com
 	masters: masters {} 的值, 没有下一级从, 就应该关闭传送
 	/etc/named.rfc1912.zones
 		zone "{{ zone }}" IN {
@@ -95,26 +171,20 @@ vi roles/dnsmaster/dns.yml
 
 # 运行
 ```
-# ansible-playbook --syntax-check /etc/ansible/roles/dnsmaster/dns.yml 
-# ansible-playbook -C /etc/ansible/roles/dnsmaster/dns.yml
-# ansible-playbook  /etc/ansible/roles/dnsmaster/dns.yml
+# ansible-playbook --syntax-check /etc/ansible/dns.yml 
+# ansible-playbook -C /etc/ansible/roles/dns.yml
+# ansible-playbook  /etc/ansible/roles/dns.yml
 ```
 
 
+# 执行
+bash /etc/ansible/ssh-copy-id.sh
+
 # 所有主机添加解析文件
-ansible all -m copy "src=resolv.conf dest=/etc/resolv.conf"
+ansible any -m copy -a "src=resolv.conf dest=/etc/resolv.conf"
 
-# 安装samba
-# ansible-playbook  /etc/ansible/roles/samba-server/smb.yml
-
-# 安装httpd
-# ansible-playbook  /etc/ansible/roles/httpd/httpd.yml
-
-# 安装php-fpm, 允许的主机必须为主机名
-# ansible-playbook  /etc/ansible/roles/php-fpm/php-fpm.yml
-
-# 安装mariadb-server
-# ansible-playbook /etc/ansible/roles/mariadb-server/mariadb-server.yml
+# 
+ansible-playbook 2httpd-php-fpm-nfs-mariadb-server_2dns-ansible-rsyslog.yml
 
 # httpd, php-fpm 挂载samba, /etc/fstab自启动, 生成网页文件
 
