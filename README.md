@@ -102,18 +102,6 @@ mountpath=/var/www/html
 mountsrc=//{{ files }}/mysmb
 
 
-注意：仅需要修改mdns, sdns为合适的ip
-
-
-对DNS的2个主机进行公钥认证
- ansible-playbook dns.yml
-
-
-
-更新当前主机的/etc/resolv.conf
-执行脚本 ssh-copy-id.sh
-
-
 
 
 
@@ -169,23 +157,15 @@ mountsrc=//{{ files }}/mysmb
 	
 
 
-# 运行
-```
-# ansible-playbook --syntax-check /etc/ansible/dns.yml 
-# ansible-playbook -C /etc/ansible/roles/dns.yml
-# ansible-playbook  /etc/ansible/roles/dns.yml
-```
+1. 更新dns1, dns2, web, php, mysql, files, rsyslog, ansible 的ip
+bash  ssh-copy-id.sh
 
-
-# 执行
-bash /etc/ansible/ssh-copy-id.sh
-
-# 所有主机添加解析文件
-ansible any -m copy -a "src=resolv.conf dest=/etc/resolv.conf"
-
-# 
+2. 对DNS的2个主机进行公钥认证
 ansible-playbook 2httpd-php-fpm-nfs-mariadb-server_2dns-ansible-rsyslog.yml
 
-# httpd, php-fpm 挂载samba, /etc/fstab自启动, 生成网页文件
+3. 更新当前主机的/etc/resolv.conf
+ bash ssh-copy-id.sh
+
+ansible-playbook 2httpd-php-fpm-nfs-mariadb-server_2dns-ansible-rsyslog.yml
 
 
