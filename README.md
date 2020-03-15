@@ -161,11 +161,13 @@ mountsrc=//{{ files }}/mysmb
 bash  ssh-copy-id.sh
 
 2. 对DNS的2个主机进行公钥认证
-ansible-playbook 2httpd-php-fpm-nfs-mariadb-server_2dns-ansible-rsyslog.yml
+ansible-playbook 2httpd-php-fpm-nfs-mariadb-server_2dns-ansible-rsyslog.yml 
+只配置了dns
 
 3. 更新当前主机的/etc/resolv.conf
  bash ssh-copy-id.sh
 
+4. 真正开始安装
 ansible-playbook 2httpd-php-fpm-nfs-mariadb-server_2dns-ansible-rsyslog.yml
 
 
